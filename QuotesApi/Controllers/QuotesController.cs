@@ -45,8 +45,13 @@ namespace QuotesApi.Controllers
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody]Quote quote)
         {
+            var current = _quotesDbContext.Quotes.Find(id);
+            current.Title = quote.Title;
+            current.Author = quote.Author;
+            current.Description = quote.Description;
+            _quotesDbContext.SaveChanges();
         }
 
         // DELETE api/<controller>/5
