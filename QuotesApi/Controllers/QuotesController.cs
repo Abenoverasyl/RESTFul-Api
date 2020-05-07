@@ -37,8 +37,10 @@ namespace QuotesApi.Controllers
 
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromBody]Quote quote)
         {
+            _quotesDbContext.Quotes.Add(quote);
+            _quotesDbContext.SaveChanges();
         }
 
         // PUT api/<controller>/5
