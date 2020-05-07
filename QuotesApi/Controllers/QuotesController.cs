@@ -2,46 +2,55 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QuotesApi.Data;
 using QuotesApi.Models;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace QuotesApi.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
-    public class QuotesController : ControllerBase
+    public class QuotesController : Controller
     {
-        static List<Quote> _quotes = new List<Quote>()
-        {
-            new Quote{Id = 0, Author="Aben Era", Description="This is project", Title="Project one"},
-            new Quote{Id = 1, Author="Aben Era2", Description="This is project2", Title="Project one2"},
-            new Quote{Id = 2, Author="Aben Era3", Description="This is project3", Title="Project one3"}
-        };
+        QuotesDbContext _quotesDbContext;
 
+        public QuotesController(QuotesDbContext quotesDbContext)
+        {
+            _quotesDbContext = quotesDbContext;
+        }
+
+        // GET: api/<controller>
         [HttpGet]
         public IEnumerable<Quote> Get()
         {
-            return _quotes;
+            return _quotesDbContext.Quotes;
         }
 
+        // GET api/<controller>/5
+        [HttpGet("{id}")]
+        public Quote Get(int id)
+        {
+            var quote = _quotesDbContext.Quotes.Find(id);
+            return quote;
+        }
+
+        // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]Quote quote)
+        public void Post([FromBody]string value)
         {
-            _quotes.Add(quote);
         }
 
+        // PUT api/<controller>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]Quote quote)
+        public void Put(int id, [FromBody]string value)
         {
-            _quotes[id] = quote;
         }
 
+        // DELETE api/<controller>/5
         [HttpDelete("{id}")]
-        public IEnumerable<Quote> Delete(int id)
+        public void Delete(int id)
         {
-            _quotes.RemoveAt(id);
-            return _quotes;
         }
     }
 }
