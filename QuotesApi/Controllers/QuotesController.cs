@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QuotesApi.Data;
 using QuotesApi.Models;
@@ -22,42 +23,63 @@ namespace QuotesApi.Controllers
 
         // GET: api/<controller>
         [HttpGet]
-        public IEnumerable<Quote> Get()
+        public IActionResult Get()
         {
-            return _quotesDbContext.Quotes;
+            return Ok(_quotesDbContext.Quotes);
         }
 
         // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public Quote Get(int id)
+        [HttpGet("{id}", Name = "Get")]
+        public IActionResult Get(int id)
         {
             var quote = _quotesDbContext.Quotes.Find(id);
-            return quote;
+            if (quote == null)
+            {
+                return NotFound("No record found..");
+            }
+            return Ok(quote);
         }
 
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]Quote quote)
+        public IActionResult Post([FromBody]Quote quote)
         {
             _quotesDbContext.Quotes.Add(quote);
             _quotesDbContext.SaveChanges();
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]Quote quote)
+        public IActionResult Put(int id, [FromBody]Quote quote)
         {
             var current = _quotesDbContext.Quotes.Find(id);
-            current.Title = quote.Title;
-            current.Author = quote.Author;
-            current.Description = quote.Description;
-            _quotesDbContext.SaveChanges();
+            if (current == null)
+            {
+                return NotFound("No record found..");
+            }
+            else
+            {
+                current.Title = quote.Title;
+                current.Author = quote.Author;
+                current.Description = quote.Description;
+                _quotesDbContext.SaveChanges();
+                return Ok("Updated Successfully!");
+            }
         }
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            var quote = _quotesDbContext.Quotes.Find(id);
+            if (quote == null)
+            {
+                return NotFound("Not Found!");
+            }
+            _quotesDbContext.Quotes.Remove(quote);
+            _quotesDbContext.SaveChanges();
+            return Ok("Quote Deleted!");
         }
     }
 }
