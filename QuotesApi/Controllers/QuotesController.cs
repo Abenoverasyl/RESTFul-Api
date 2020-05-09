@@ -52,6 +52,15 @@ namespace QuotesApi.Controllers
         }
 
 
+        [HttpGet]
+        [Route("[action]")]
+        public IActionResult SeachQuote(string type)
+        {
+            var quotes = _quotesDbContext.Quotes.Where(q => q.Type.StartsWith(type));
+            return Ok(quotes);
+        }
+
+
         // GET api/Quotes/5
         [HttpGet("{id}", Name = "Get")]
         public IActionResult Get(int id)
