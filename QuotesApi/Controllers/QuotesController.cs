@@ -21,14 +21,14 @@ namespace QuotesApi.Controllers
             _quotesDbContext = quotesDbContext;
         }
 
-        // GET: api/<controller>
+        // GET: api/Quotes
         [HttpGet]
         public IActionResult Get()
         {
             return Ok(_quotesDbContext.Quotes);
         }
 
-        // GET api/<controller>/5
+        // GET api/Quotes/5
         [HttpGet("{id}", Name = "Get")]
         public IActionResult Get(int id)
         {
@@ -38,6 +38,14 @@ namespace QuotesApi.Controllers
                 return NotFound("No record found..");
             }
             return Ok(quote);
+        }
+
+
+        // GET api/Quotes/Test/1
+        [HttpGet("[action]/{id}")]
+        public int Test(int id)
+        {
+            return id;
         }
 
         // POST api/<controller>
