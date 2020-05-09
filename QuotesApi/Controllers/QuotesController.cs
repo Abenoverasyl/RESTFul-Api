@@ -41,6 +41,17 @@ namespace QuotesApi.Controllers
             return Ok(quotes);
         }
 
+
+        [HttpGet("[action]")]
+        public IActionResult PagingQuote(int? pageNumber, int? pageSize)
+        {
+            var quotes = _quotesDbContext.Quotes.OrderBy(q => q.Id);
+            var curPageNumb = pageNumber ?? 1;
+            var curPageSize = pageSize ?? 1;
+            return Ok(quotes.Skip((curPageNumb - 1) * curPageSize).Take(curPageSize));
+        }
+
+
         // GET api/Quotes/5
         [HttpGet("{id}", Name = "Get")]
         public IActionResult Get(int id)
